@@ -3,6 +3,7 @@
 # (C) 2014 Guillermo Gutierrez
 #
 SHELL = /bin/bash
+MAIN_EXE ?= main.rb
 
 ifndef FOLDER
 define FOLDER
@@ -17,19 +18,19 @@ endef
 TGZ_FILE := tuenti-contest-4-xiterrex.tar.gz
 
 run: $(FOLDER)
-	$(FOLDER)/main.rb
+	$(FOLDER)/$(MAIN_EXE)
 
-$(FOLDER)/.token: $(FOLDER)
+$(FOLDER)/.token:
 	@read -p'token for $(FOLDER)? ' TOKEN; echo $$TOKEN > $@
 
 test: $(FOLDER) $(FOLDER)/.token
-	./test_challenge $(TOKEN) $(FOLDER)/main.rb
+	./test_challenge $(TOKEN) $(FOLDER)/$(MAIN_EXE)
 
 $(TGZ_FILE): .git/refs/heads/master
 	git archive master -o $@ $(FOLDER) Makefile README.md
 
 submit: $(TGZ_FILE) $(FOLDER) $(FOLDER)/.token
-	./submit_challenge $(TOKEN) $(TGZ_FILE) $(FOLDER)/main.rb
+	./submit_challenge $(TOKEN) $(TGZ_FILE) $(FOLDER)/$(MAIN_EXE)
 
 clean:
 	$(RM) $(TGZ_FILE)
